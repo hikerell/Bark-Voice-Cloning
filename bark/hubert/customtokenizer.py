@@ -105,6 +105,7 @@ class CustomTokenizer(nn.Module):
 
     @staticmethod
     def load_from_checkpoint(path, map_location: MAP_LOCATION = None):
+        print(f"CustomTokenizer load from checkpoint: {path} ...")
         old = True
         with ZipFile(path) as model_zip:
             filesMatch = [file for file in model_zip.namelist() if file.endswith('/.info')]
@@ -115,8 +116,10 @@ class CustomTokenizer(nn.Module):
                 data_from_model = Data.load(model_zip.read(file).decode('utf-8'))
             model_zip.close()
         if old:
+            print(f"CustomTokenizer load from checkpoint: use old ...")
             model = CustomTokenizer()
         else:
+            print(f"CustomTokenizer load from checkpoint: use it ...")
             model = CustomTokenizer(data_from_model.hidden_size, data_from_model.input_size, data_from_model.output_size, data_from_model.version)
         model.load_state_dict(torch.load(path))
         if map_location:
